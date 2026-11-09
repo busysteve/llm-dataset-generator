@@ -1,0 +1,24 @@
+[project]
+name = "llm-dataset-generator"
+version = "0.1.0"
+description = "Build User/Assistant training files from nouns, verbs, and prepositions in a prose document."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "CC0-1.0" }
+dependencies = ["spacy>=3.7,<4"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+llm-dataset-generator = "llm_dataset_generator.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
