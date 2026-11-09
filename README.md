@@ -25,6 +25,12 @@ python -m spacy download en_core_web_sm
 llm-dataset-generator --input examples/harbor.txt --out out
 ```
 
+`run.sh` does the install and that generate step. It takes the document path and the output directory:
+
+```bash
+./run.sh examples/harbor.txt out
+```
+
 `out/exchanges/0001.txt` is one exchange:
 
 ```
