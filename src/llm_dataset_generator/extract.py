@@ -197,6 +197,9 @@ def _clauses_for(sent: Span, sentence: str) -> list[Clause]:
 
 
 def extract(nlp: spacy.language.Language, text: str, max_chars: int) -> list[Clause]:
+    # spaCy rejects len(text) > nlp.max_length. The default is 1_000_000.
+    if len(text) > nlp.max_length:
+        nlp.max_length = len(text)
     doc: Doc = nlp(text)
     clauses: list[Clause] = []
     for sent in doc.sents:

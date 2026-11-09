@@ -49,6 +49,8 @@ Assistant: The keeper rings the bell at dawn.
 | `--max-text-length` | 1000000 | read at most this many characters from the document |
 | `--max-pairs` | 0 | 0 writes every pair; a positive number stops after that many files |
 
+spaCy's own limit starts at 1000000 characters. The tool raises `nlp.max_length` to the length of the text it read, then parses that text. A longer document needs a large amount of temporary memory for the parser and the named-entity model.
+
 Exit 0 prints the file count and the list path. Exit 2 is a bad input, a missing model, or an output directory that already has files. Exit 3 means the document produced no pairs, and nothing is written.
 
 A sentence that contains `User:` or `Assistant:` is skipped. Questions whose slot text is not in the sentence are dropped. The same user line is kept once, from the first sentence that produced it.

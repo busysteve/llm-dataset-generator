@@ -18,6 +18,19 @@ def test_collapse_and_period():
     assert ensure_period("Does he?") == "Does he?"
 
 
+def test_extract_lifts_spacy_max_length():
+    previous = nlp.max_length
+    nlp.max_length = 10
+    text = "The keeper rings the bell at dawn."
+    try:
+        assert len(text) > 10
+        clauses = extract(nlp, text, 400)
+        assert clauses
+        assert nlp.max_length >= len(text)
+    finally:
+        nlp.max_length = previous
+
+
 def test_keeper_clause_slots():
     clauses = extract(nlp, "The keeper rings the bell at dawn.", 400)
     assert clauses
