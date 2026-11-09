@@ -40,6 +40,7 @@ Assistant: The keeper rings the bell at dawn.
 | `--out` | required | directory to create; must be missing or empty |
 | `--model` | `en_core_web_sm` | spaCy model name |
 | `--max-chars` | 400 | skip a sentence longer than this |
+| `--max-text-length` | 1000000 | read at most this many characters from the document |
 | `--max-pairs` | 0 | 0 writes every pair; a positive number stops after that many files |
 
 Exit 0 prints the file count and the list path. Exit 2 is a bad input, a missing model, or an output directory that already has files. Exit 3 means the document produced no pairs, and nothing is written.

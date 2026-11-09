@@ -53,6 +53,22 @@ def test_cli_writes_the_worked_example(tmp_path: Path, capsys):
     assert "exchanges.txt" in capsys.readouterr().out
 
 
+def test_cli_max_text_length_drops_the_rest(tmp_path: Path):
+    first = "The keeper rings the bell at dawn.\n"
+    source = tmp_path / "two.txt"
+    source.write_text(first + "The cook sets the bread in the kitchen.\n", encoding="utf-8")
+    out = tmp_path / "out"
+    code = run([
+        "--input", str(source),
+        "--out", str(out),
+        "--max-text-length", str(len(first)),
+    ])
+    assert code == 0
+    body = "".join(path.read_text(encoding="utf-8") for path in (out / "exchanges").iterdir())
+    assert "keeper" in body
+    assert "cook" not in body
+
+
 def test_cli_no_pairs(tmp_path: Path, capsys):
     source = tmp_path / "fragment.txt"
     source.write_text("...\n", encoding="utf-8")

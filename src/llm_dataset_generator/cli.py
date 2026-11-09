@@ -15,6 +15,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--out", required=True, help="empty directory to create")
     parser.add_argument("--model", default="en_core_web_sm")
     parser.add_argument("--max-chars", type=int, default=400)
+    parser.add_argument("--max-text-length", type=int, default=1_000_000)
     parser.add_argument("--max-pairs", type=int, default=0)
     return parser
 
@@ -24,11 +25,12 @@ def _fail(message: str, code: int = 2) -> int:
     return code
 
 
-def _read_input(path: Path) -> str | int:
+def _read_input(path: Path, max_text_length: int) -> str | int:
     if not path.is_file():
         return _fail(str(path))
     try:
-        text = path.read_text(encoding="utf-8")
+        with path.open(encoding="utf-8") as handle:
+            text = handle.read(max_text_length)
     except UnicodeDecodeError:
         return _fail("encoding")
     if not text.strip():
@@ -40,9 +42,11 @@ def run(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     if args.max_chars < 1:
         return _fail("max-chars")
+    if args.max_text_length < 1:
+        return _fail("max-text-length")
     if args.max_pairs < 0:
         return _fail("max-pairs")
-    loaded = _read_input(Path(args.input))
+    loaded = _read_input(Path(args.input), args.max_text_length)
     if isinstance(loaded, int):
         return loaded
     try:

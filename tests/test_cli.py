@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from llm_dataset_generator.cli import run
+from llm_dataset_generator.cli import _parser, _read_input, run
 
 
 def test_missing_input_prints_the_path(capsys):
@@ -23,6 +23,29 @@ def test_bad_encoding(tmp_path: Path, capsys):
     code = run(["--input", str(source), "--out", str(tmp_path / "out")])
     assert code == 2
     assert capsys.readouterr().err.strip() == "encoding"
+
+
+def test_max_text_length_defaults_to_one_million():
+    action = next(item for item in _parser()._actions if item.dest == "max_text_length")
+    assert action.default == 1_000_000
+
+
+def test_read_input_stops_at_max_text_length(tmp_path: Path):
+    source = tmp_path / "doc.txt"
+    source.write_text("abcdef", encoding="utf-8")
+    assert _read_input(source, 3) == "abc"
+
+
+def test_rejects_nonpositive_max_text_length(tmp_path: Path, capsys):
+    source = tmp_path / "doc.txt"
+    source.write_text("The keeper rings the bell.\n", encoding="utf-8")
+    code = run([
+        "--input", str(source),
+        "--out", str(tmp_path / "out"),
+        "--max-text-length", "0",
+    ])
+    assert code == 2
+    assert capsys.readouterr().err.strip() == "max-text-length"
 
 
 def test_rejects_nonpositive_max_chars(tmp_path: Path, capsys):
